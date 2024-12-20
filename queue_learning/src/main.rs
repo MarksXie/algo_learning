@@ -38,6 +38,7 @@ struct ListNode<T>{
     next: Option<Rc<RefCell<ListNode<T>>>>,
 }
 
+#[allow(dead_code)]
 impl <T> ListNode<T> {
     pub fn new(elem: T) -> Self {
         Self{
@@ -54,3 +55,5 @@ pub struct LinkedListQueue<T>{
     rear: Option<Rc<RefCell<ListNode<T>>>>,
     que_size: u32,
 }
+
+// 为链表实现构造、获取队列长度、判断队列是否为空、入队、出队、访问队首元素、将链表转换成Array并返回
