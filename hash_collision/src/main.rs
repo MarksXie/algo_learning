@@ -2,6 +2,8 @@
     1.改良哈希表数据结构，使得哈希表可以在出现哈希冲突的时候能正常工作。
     2.仅在必要的时候，即在哈希冲突比较严重的时候，才执行扩容操作。 */
 
+use std::collections::HashMap;
+
 /* 1.链式地址
         在原始哈希表中，每个桶仅能存储一个键值对。链式地址(seperate chaining)将单个元素转换为链表，将键值对作为链表节点，将所有发生冲突的键值对都存储在一个链表中。
         
@@ -17,9 +19,6 @@
         以下给出了链式地址哈希表的简单实现，需要注意两点
             1.使用列表(动态数组)代替链表，从而简化代码。在这种设定下，哈希表(数组)包含多个bucket，每个bucket都是一个列表。
             2.以下实现包含哈希表扩容方法。当负载因子超过2/3时，我们将哈希表扩容至原先的2倍。 */
-
-use std::{ops::Index, thread::{panicking, sleep_ms}};
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct Pair{
     key: i32,
@@ -35,6 +34,7 @@ struct HashMapChaining{
     buckets: Vec<Vec<Pair>>,
 }
 
+#[allow(dead_code)]
 impl HashMapChaining {
     /* 构造方法 */
     pub fn new() -> Self {
@@ -155,6 +155,7 @@ impl HashMapChaining {
          */
 
 /* 开放寻址哈希表 */
+#[allow(dead_code)]
 struct HashMAPOpenAdressing{
     size: usize,    // 键值对数量
     capacity: usize, // 哈希表容量
@@ -164,6 +165,7 @@ struct HashMAPOpenAdressing{
     tombstone: Option<Pair>, // 删除标记
 }
 
+#[allow(dead_code)]
 impl HashMAPOpenAdressing {
     /* 构造方法 */
     fn new() -> Self {
@@ -295,6 +297,23 @@ impl HashMAPOpenAdressing {
     }
 }
 
+/* 平方探测：
+    平方探测与线性检测类似，都是开放寻址的常见策略之一。当冲突发生时，平方探测不是简单地跳过一个固定的步数，而是跳过“探测次数的平方”的步数。
+    平方探测主要具有以下优势：
+        1.平方探测会跳过探测次数平方的距离，试图缓解线性检测的聚集效应。
+        2.平方探测会跳过更大的距离来寻找空位置，有助于使数据分布更均匀。
+    然而，平方探测并不是完美的。
+        1.仍然会存在聚集现象，即某些位置比其他位置更容易被占用。
+        2.由于平方的增长，平方探测可能不会探测整个哈希表，这意味着即使哈希表中有空桶，平方探测也可能无法访问它。 */
+
+/* 多次哈希：
+    顾名思义，多次哈希方法就是通过多次哈希函数进行探测。
+        1.插入元素：若哈希函数1出现冲突，则尝试哈希函数2，以此类推，直到找到空位后插入元素。
+        2.查找元素：在相同的哈希函数顺序下进行查找，直到找到目标元素时返回；若遇到空位或已尝试所有哈希函数，说明哈希表中不存在这个元素，返回None。
+    与线性探测相比，多次哈希方法不易产生聚集，但多个哈希函数会带来额外的计算量。 */
+
 fn main() {
-    
+    let mut hash_map: HashMap<i32 , String> = HashMap::new();
+    hash_map.insert(1, "wudi".to_string());
+    println!("{:?}", hash_map);
 }
